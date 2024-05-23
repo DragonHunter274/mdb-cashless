@@ -273,71 +273,7 @@ void submitHTTPRequest(HTTP_Method method, String http_link, uint16_t *status_co
       }
   
   }
-//{
-//    String response;
-//    uint8_t start_index;
-//    uint8_t end_index;
-////    uint8_t data_len;
-//    // Commands for maitainance
-////    SIM900_SendCommand(F("AT"));
-////    SIM900_SendCommand(F("CPIN?"));
-////    SIM900_SendCommand(F("CSQ"));
-////    SIM900_SendCommand(F("CREG?"));
-////    SIM900_SendCommand(F("CGATT?"));
-//    
-//    // TCP config
-////    SIM900_SendCommand(F("CIPSHUT"));
-////    SIM900_SendCommand(F("CSTT=\"internet.beeline.ru\",\"beeline\",\"beeline\""));
-////    SIM900_SendCommand(F("CIICR"));
-////    SIM900_SendCommand(F("CIFSR"));
-////    SIM900_SendCommand(F("CIPSTATUS"));
-//
-//    // Make connection and HTTP request
-//    SIM900_SendCommand(F("SAPBR=1,1")); // Enable bearer
-//    SIM900_SendCommand(F("HTTPINIT"));
-//    SIM900_SendCommand("HTTPPARA=\"URL\",\"" + http_link + "\""); // cant put these two strings into flash memory
-//    SIM900_SendCommand(F("HTTPPARA=\"CID\",1"));
-//    
-//    switch (method)
-//    {   //submit the request
-//        case GET  : response = SIM900_SendCommand(F("HTTPACTION=0")); break; // GET
-//        case POST : response = SIM900_SendCommand(F("HTTPACTION=1")); break; // POST
-////        case HEAD : response = SIM900_SendCommand(F("HTTPACTION=2")); break; // HEAD // not needed for now, disabled to free Flash memory
-//        default : return;
-//    } // optimize for flash/RAM space, HTTPACTION repeats 3 times
-//    /*
-//     * Read the HTTP code
-//     * Successful response is of the following format (without angular brackets):
-//     * OK\r\n+HTTPACTION:<method>,<status_code>,<datalen>\r\n
-//     * so search for the first comma
-//     */
-//    start_index = response.indexOf(',') + 1;
-//    end_index = response.indexOf(',', start_index);
-//    *status_code = (uint16_t)response.substring(start_index, end_index).toInt();
-//    
-//    if (*status_code == 200) // read the response
-//    {
-//        /*
-//         * Successful response is of the following format:
-//         * AT+HTTPREAD\r\n+HTTPREAD:<datalen>,<data>\r\nOK\r\n
-//         * so search for the first ':', read data_len until '\r'
-//         * then read the data itself
-//         */
-//        response = SIM900_SendCommand(F("HTTPREAD"));
-//        start_index = response.indexOf(':') + 1;
-//        end_index = response.indexOf('\r', start_index);
-////        data_len = (uint8_t)response.substring(start_index, end_index).toInt();
-//        // now parse string from a new start_index to start_index + data_len
-//        start_index = response.indexOf('\n', end_index) + 1;
-////        *user_funds = (uint16_t)response.substring(start_index, start_index + data_len).toInt();
-////      // or until '\r', which takes less Flash memory
-//        end_index = response.indexOf('\r', start_index);
-//        *user_funds = (uint16_t)response.substring(start_index, end_index).toInt();
-//    }
-//    // These two are must be present in the end
-//    SIM900_SendCommand(F("HTTPTERM")); // Terminate session, mandatory
-//    SIM900_SendCommand(F("SAPBR=0,1")); // Disable bearer, mandatory
-//}
+
 
 void timeout(uint32_t start_time, uint32_t timeout_value)
 {
@@ -457,68 +393,7 @@ void MDB_CommandHandler(uint16_t *Command, uint16_t *Csh_state)
     }
     *Command = command;
     *Csh_state= csh_state;
-    // // State Machine Logic
-    // switch (csh_state)
-    // {
-    //     case CSH_S_INACTIVE     : //PORTC = 0; PORTC |= (1 << 0);
-    //     {
-    //         switch (command)
-    //         {
-    //             case VMC_RESET     : MDB_ResetHandler();     break; //PORTC ^= (1 << 0); 
-    //             case VMC_POLL      : MDB_PollHandler();      break;
-    //             case VMC_SETUP     : MDB_SetupHandler();     break;
-    //             case VMC_EXPANSION : MDB_ExpansionHandler(); break;
-    //             default : break;
-    //         }
-    //     }; break;
-    //     case CSH_S_DISABLED     : //PORTC = 0; PORTC |= (1 << 1);
-    //     {
-    //         switch (command)
-    //         {
-    //             case VMC_RESET     : MDB_ResetHandler();     break; //PORTC ^= (1 << 0); 
-    //             case VMC_SETUP     : MDB_SetupHandler();     break;
-    //             // case VMC_POLL      : csh_poll_state = CSH_ACK; MDB_PollHandler();      break;
-    //             case VMC_READER    : MDB_ReaderHandler();    break;
-    //             case VMC_EXPANSION : MDB_ExpansionHandler(); break;
-    //             default : break;
-    //         }
-    //     }; break;
-    //     case CSH_S_ENABLED      : // PORTC = 0; PORTC |= (1 << 5);
-    //     {
-    //         switch (command)
-    //         {
-    //             case VMC_RESET     : MDB_ResetHandler();     break; // PORTC ^= (1 << 0); 
-    //             case VMC_POLL      : MDB_PollHandler();      break;
-    //             case VMC_VEND      : MDB_VendHandler();      break;
-    //             case VMC_READER    : MDB_ReaderHandler();    break;
-    //             case VMC_EXPANSION : MDB_ExpansionHandler(); break;
-                
-    //             default : break;
-    //         }
-    //     }; break;
-    //     case CSH_S_SESSION_IDLE :
-    //     {
-    //         switch (command)
-    //         {
-    //             case VMC_RESET     : PORTC ^= (1 << 0); MDB_ResetHandler();     break;
-    //             case VMC_SETUP     : PORTC ^= (1 << 1); MDB_SetupHandler();     break;
-    //             case VMC_POLL      : PORTC ^= (1 << 2); MDB_PollHandler();      break;
-    //             case VMC_VEND      : PORTC ^= (1 << 3); MDB_VendHandler();      break;
-    //             case VMC_READER    : PORTC ^= (1 << 4); MDB_ReaderHandler();    break;
-    //             case VMC_EXPANSION : PORTC ^= (1 << 5); MDB_ExpansionHandler(); break;
-    //             default : break;
-    //         }
-    //     }; break;
-    //     case CSH_S_VEND         : //PORTC = 0; PORTC |= (1 << 4);
-    //     {
-    //         switch (command)
-    //         {
 
-    //         }
-    //     }; break;
-
-    //     default : break;
-    // }
 }
 /*
  * Handles Just Reset sequence
