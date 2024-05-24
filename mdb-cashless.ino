@@ -626,7 +626,7 @@ void Reset(void)
     // Send ACK, turn INACTIVE
     csh_state = CSH_S_INACTIVE;
     csh_poll_state = CSH_JUST_RESET;
-    uint16_t readCmd; while (1) if (MDB_DataCount() > 0) break; MDB_Read(&readCmd);
+    //uint16_t readCmd; while (1) if (MDB_DataCount() > 0) break; MDB_Read(&readCmd);
     MDB_Send(CSH_ACK);
 
     while ( ! (USART_TXBuf_IsEmpty()) )
